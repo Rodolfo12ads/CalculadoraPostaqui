@@ -20,6 +20,7 @@ function Step1() {
     <Logo/>
     <Frase texto="Origem"/>
     <Forms formData={formData} setFormData={setFormData} onNext={handleNext} />
+
      </>
   );
    

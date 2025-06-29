@@ -44,7 +44,8 @@ function Step2() {
       </div>
 
       <Frase texto="Destino" />
-      <Forms formData={formData} setFormData={setFormData} onNext={handleNext} />
+      <Forms formData={formData} setFormData={setFormData} onNext={handleNext} prefix="Destino" />
+
     </div>
   );
 }

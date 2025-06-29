@@ -1,4 +1,3 @@
-// FormPacoteEnvio.jsx
 import { useState } from "react";
 import styles from "./FormPacoteEnvio.module.css";
 
@@ -8,10 +7,10 @@ function FormPacoteEnvio({ onSubmit }) {
     altura: "",
     largura: "",
     comprimento: "",
-    valor: "",
+    valorDeclarado: "",
     quantidade: "",
     descricao: "",
-    logisticaReversa: false,
+    entregaReversa: false,
     avisoRecebimento: false,
     maosProprias: false
   });
@@ -26,7 +25,19 @@ function FormPacoteEnvio({ onSubmit }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(dados);
+
+    // Conversão simples dos campos numéricos para number (evita strings no backend)
+    const dadosConvertidos = {
+      ...dados,
+      peso: Number(dados.peso),
+      altura: Number(dados.altura),
+      largura: Number(dados.largura),
+      comprimento: Number(dados.comprimento),
+      valorDeclarado: Number(dados.valorDeclarado),
+      quantidade: Number(dados.quantidade),
+    };
+
+    onSubmit(dadosConvertidos);
   };
 
   return (
@@ -40,21 +51,21 @@ function FormPacoteEnvio({ onSubmit }) {
 
           <label>Altura</label>
           <input name="altura" value={dados.altura} onChange={handleChange} required />
-          <span className={styles.unidade}>centímetros</span>
+          <span className={styles.unidade}>cm</span>
 
           <label>Largura</label>
           <input name="largura" value={dados.largura} onChange={handleChange} required />
-          <span className={styles.unidade}>centímetros</span>
+          <span className={styles.unidade}>cm</span>
 
           <label>Comprimento</label>
           <input name="comprimento" value={dados.comprimento} onChange={handleChange} required />
-          <span className={styles.unidade}>centímetros</span>
+          <span className={styles.unidade}>cm</span>
         </div>
 
         <div className={styles.switches}>
           <label>
             Logística Reversa
-            <input type="checkbox" name="logisticaReversa" checked={dados.logisticaReversa} onChange={handleChange} />
+            <input type="checkbox" name="entregaReversa" checked={dados.entregaReversa} onChange={handleChange} />
           </label>
           <label>
             Aviso de recebimento
@@ -66,7 +77,7 @@ function FormPacoteEnvio({ onSubmit }) {
           </label>
 
           <label>Valor da mercadoria</label>
-          <input name="valor" value={dados.valor} onChange={handleChange} required />
+          <input name="valorDeclarado" value={dados.valorDeclarado} onChange={handleChange} required />
           <span className={styles.unidade}>R$</span>
 
           <label>Quantidade de itens</label>

@@ -1,4 +1,4 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import styles from "./Step3.module.css";
 import Logo from "../components/Logo";
@@ -8,78 +8,83 @@ import FormPacoteEnvio from "../components/FormPacoteEnvio";
 
 function Step3() {
   const location = useLocation();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState(location.state || {});
 
   const handleSubmitPacote = async (pacoteData) => {
-  const dadosCompletos = { ...formData, ...pacoteData };
+    const payload = {
+      sender: {
+        fullname: formData.nome,
+        cpf: formData.cpf,
+        phone: formData.telefone,
+        email: formData.email,
+        address: {
+          cep: formData.cep,
+          state: formData.estado,
+          uf: formData.estado,
+          city: formData.cidade,
+          neighborhood: formData.bairro,
+          street: formData.rua,
+          number: formData.numero,
+          complement: formData.complemento
+        }
+      },
+      receiver: {
+        fullname: formData.nomeDestino,
+        cpf: formData.cpfDestino,
+        phone: formData.telefoneDestino,
+        email: formData.emailDestino,
+        address: {
+          cep: formData.cepDestino,
+          state: formData.estadoDestino,
+          uf: formData.estadoDestino,
+          city: formData.cidadeDestino,
+          neighborhood: formData.bairroDestino,
+          street: formData.ruaDestino,
+          number: formData.numeroDestino,
+          complement: formData.complementoDestino
+        }
+      },
+      package: {
+        weight: pacoteData.peso,
+        height: pacoteData.altura,
+        width: pacoteData.largura,
+        length: pacoteData.comprimento,
+        reverse: pacoteData.entregaReversa || false,
+        ar: pacoteData.avisoRecebimento || false,
+        own_hands: pacoteData.maosProprias || false,
+        information: {
+          amount: pacoteData.valorDeclarado,
+          quantity: pacoteData.quantidade,
+          description: pacoteData.descricao
+        }
+      }
+    };
 
-  const payload = {
-    sender: {
-      fullname: formData.nome,
-      cpf: formData.cpf,
-      phone: formData.telefone,
-      email: formData.email,
-      address: {
-        cep: formData.cep,
-        state: formData.estado,
-        uf: formData.estado,
-        city: formData.cidade,
-        neighborhood: formData.bairro,
-        street: formData.rua,
-        number: formData.numero,
-        complement: formData.complemento
-      }
-    },
-    receiver: {
-      fullname: formData.nomeDestino,
-      cpf: formData.cpfDestino,
-      phone: formData.telefoneDestino,
-      email: formData.emailDestino,
-      address: {
-        cep: formData.cepDestino,
-        state: formData.estadoDestino,
-        uf: formData.estadoDestino,
-        city: formData.cidadeDestino,
-        neighborhood: formData.bairroDestino,
-        street: formData.ruaDestino,
-        number: formData.numeroDestino,
-        complement: formData.complementoDestino
-      }
-    },
-    package: {
-      weight: pacoteData.peso,
-      height: pacoteData.altura,
-      width: pacoteData.largura,
-      length: pacoteData.comprimento,
-      reverse: pacoteData.entregaReversa || false,
-      ar: pacoteData.avisoRecebimento || false,
-      own_hands: pacoteData.maosProprias || false,
-      information: {
-        amount: pacoteData.valorDeclarado,
-        quantity: pacoteData.quantidade,
-        description: pacoteData.descricao
-      }
+    try {
+      const response = await fetch("http://localhost:3001/api/pedido", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const resultado = await response.json();
+      console.log("Resultado da simulação:", resultado);
+
+      // Avança para o Step4 com os dados retornados
+      navigate("/step4", {
+        state: {
+          frete: resultado.frete,
+          pedido: resultado.pedido
+        }
+      });
+
+    } catch (error) {
+      console.error("Erro ao enviar os dados:", error);
     }
   };
-
-  try {
-    const response = await fetch("https://f29faec4-6487-4b60-882f-383b4054cc32.mock.pstmn.io/shipping_calculate", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(payload)
-    });
-
-    const resultado = await response.json();
-    console.log("Resultado da simulação:", resultado);
-
-    // Aqui você pode salvar no banco também, se quiser, ou navegar pra próxima etapa
-  } catch (error) {
-    console.error("Erro ao enviar os dados:", error);
-  }
-};
-
 
   const origemData = {
     nome: formData.nome,
@@ -94,15 +99,15 @@ function Step3() {
   };
 
   const destinoData = {
-    nome: formData.nome,
-    cpf: formData.cpf,
-    cep: formData.cep,
-    estado: formData.estado,
-    cidade: formData.cidade,
-    bairro: formData.bairro,
-    rua: formData.rua,
-    numero: formData.numero,
-    complemento: formData.complemento,
+    nome: formData.nomeDestino,
+    cpf: formData.cpfDestino,
+    cep: formData.cepDestino,
+    estado: formData.estadoDestino,
+    cidade: formData.cidadeDestino,
+    bairro: formData.bairroDestino,
+    rua: formData.ruaDestino,
+    numero: formData.numeroDestino,
+    complemento: formData.complementoDestino,
   };
 
   return (

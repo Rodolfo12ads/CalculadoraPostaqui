@@ -1,15 +1,19 @@
 import styles from "./Forms.module.css";
-import logo from "../assets/logo.svg";
 
-function Forms({ formData, setFormData, onNext }) {
+function Forms({ formData, setFormData, onNext, prefix = "" }) {
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    const fieldName = prefix ? `${name}${prefix}` : name;
+
+    setFormData((prev) => ({
+      ...prev,
+      [fieldName]: value,
+    }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onNext(); // agora sim: onNext vem das props
+    onNext();
   };
 
   const fields = [
@@ -23,31 +27,30 @@ function Forms({ formData, setFormData, onNext }) {
     { label: "Bairro", name: "bairro", type: "text" },
     { label: "Rua", name: "rua", type: "text" },
     { label: "Número", name: "numero", type: "text" },
-    { label: "Complemento", name: "complemento", type: "text", placeholder: "Opcional" }
+    { label: "Complemento", name: "complemento", type: "text", placeholder: "Opcional" },
   ];
 
   return (
     <div className={styles.page}>
-     
-
       <form onSubmit={handleSubmit} className={styles.container}>
-        
-
         <div className={styles.formGrid}>
-          {fields.map((field) => (
-            <div className={styles.formGroup} key={field.name}>
-              <label className={styles.label}>{field.label}</label>
-              <input
-                className={styles.input}
-                type={field.type}
-                name={field.name}
-                value={formData[field.name]}
-                onChange={handleChange}
-                required={field.name !== "complemento"}
-                placeholder={field.placeholder || ""}
-              />
-            </div>
-          ))}
+          {fields.map((field) => {
+            const fullFieldName = prefix ? `${field.name}${prefix}` : field.name;
+            return (
+              <div className={styles.formGroup} key={fullFieldName}>
+                <label className={styles.label}>{field.label}</label>
+                <input
+                  className={styles.input}
+                  type={field.type}
+                  name={field.name}
+                  value={formData[fullFieldName] || ""}
+                  onChange={handleChange}
+                  required={field.name !== "complemento"}
+                  placeholder={field.placeholder || ""}
+                />
+              </div>
+            );
+          })}
         </div>
 
         <button type="submit" className={styles.button}>Avançar</button>
