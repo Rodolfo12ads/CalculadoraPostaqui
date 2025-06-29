@@ -1,25 +1,15 @@
 // ResumoOrigemDestino.jsx
 import styles from "./ResumoOrigemDestino.module.css";
 
-function ResumoOrigemDestino({ formData }) {
-  const origem = {
-    nome: formData.nome,
-    cpf: formData.cpf,
-    endereco: `${formData.cep} - ${formData.estado} - ${formData.cidade} - ${formData.bairro} - ${formData.rua} - ${formData.numero} ${formData.complemento || ""}`,
-  };
-
-  const destino = {
-    nome: formData.nomeDestino,
-    cpf: formData.cpfDestino,
-    endereco: `${formData.cepDestino} - ${formData.estadoDestino} - ${formData.cidadeDestino} - ${formData.bairroDestino} - ${formData.ruaDestino} - ${formData.numeroDestino} ${formData.complementoDestino || ""}`,
-  };
-
+function ResumoOrigemDestino({ origem, destino }) {
   return (
     <div className={styles.container}>
       <div className={`${styles.card} ${styles.origem}`}>
         <h3>Origem</h3>
         <p>{origem.nome} - {origem.cpf}</p>
-        <p>{origem.endereco}</p>
+        <p>{origem.cep}, {origem.estado}, {origem.cidade}</p>
+        <p>{origem.bairro}, {origem.rua}, {origem.numero}</p>
+        {origem.complemento && <p>Comp: {origem.complemento}</p>}
       </div>
 
       <div className={styles.arrow}>
@@ -29,7 +19,9 @@ function ResumoOrigemDestino({ formData }) {
       <div className={`${styles.card} ${styles.destino}`}>
         <h3>Destino</h3>
         <p>{destino.nome} - {destino.cpf}</p>
-        <p>{destino.endereco}</p>
+        <p>{destino.cep}, {destino.estado}, {destino.cidade}</p>
+        <p>{destino.bairro}, {destino.rua}, {destino.numero}</p>
+        {destino.complemento && <p>Comp: {destino.complemento}</p>}
       </div>
     </div>
   );
