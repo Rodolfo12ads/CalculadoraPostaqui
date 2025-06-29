@@ -1,16 +1,38 @@
 /* App.css */
-
-#root {
+/* index.css */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  font-family: 'Segoe UI', sans-serif;
+  box-sizing: border-box;
+  background: linear-gradient(
+    to bottom,
+    #ffffff 0%,
+    #f4f7fa 10%,
+    #d8e6f5 25%,
+    #022e6f 100%
+  );
   display: flex;
   flex-direction: column;
   min-height: 100vh;
 }
+
+/* Garante que o conteúdo dentro do root ocupe toda a tela */
+#root {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
 
 /* Aplica fundo e padding à área principal */
 .app {
   flex: 1;
   background-color: #f4b731;
   padding: 40px;
+  
 }
 
 /* Estilos opcionais para elementos globais */

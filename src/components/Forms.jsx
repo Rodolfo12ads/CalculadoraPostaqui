@@ -1,22 +1,7 @@
-import { useState } from "react";
 import styles from "./Forms.module.css";
-import logo from "../assets/logo.svg"; // ajuste se necessário
+import logo from "../assets/logo.svg";
 
-function Forms() {
-  const [formData, setFormData] = useState({
-    nome: '',
-    cpf: '',
-    telefone: '',
-    email: '',
-    cep: '',
-    estado: '',
-    cidade: '',
-    bairro: '',
-    rua: '',
-    numero: '',
-    complemento: ''
-  });
-
+function Forms({ formData, setFormData, onNext }) {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -24,7 +9,7 @@ function Forms() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Dados enviados:", formData);
+    onNext(); // agora sim: onNext vem das props
   };
 
   const fields = [
@@ -43,13 +28,10 @@ function Forms() {
 
   return (
     <div className={styles.page}>
-      <div className={styles.header}>
-        <img src={logo} alt="Logo" className={styles.logo} />
-        <h2>Teste Calculadora Postaqui</h2>
-      </div>
+     
 
       <form onSubmit={handleSubmit} className={styles.container}>
-        <div className={styles.formTitle}>Dados de Origem</div>
+        
 
         <div className={styles.formGrid}>
           {fields.map((field) => (
