@@ -1,76 +1,77 @@
 import { useState } from "react";
+import styles from "./Forms.module.css";
+import logo from "../assets/logo.svg"; // ajuste se necessário
 
-function Forms(){
-    // Estado inicial do formulário
-    const [formData, setFormData] = useState({
-        nome:'',
-        cpf:'',
-        telefone:'',
-        email:'',
-        cep:'',
-        estado:'',
-        cidade:'',
-        bairro:'',
-        rua:'',
-        numero:'',
-        complemento:''
-    })
-    // Atualiza os campos do formulário
-    const handleChange = (e)=>{
-        const { name, value } = e.target;
+function Forms() {
+  const [formData, setFormData] = useState({
+    nome: '',
+    cpf: '',
+    telefone: '',
+    email: '',
+    cep: '',
+    estado: '',
+    cidade: '',
+    bairro: '',
+    rua: '',
+    numero: '',
+    complemento: ''
+  });
 
-        setFormData((prev)=>({
-            ...prev,
-            [name]:value
-        }));
-    }
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
 
-    const handleSubmit = (e)=>{
-       e.preventDefault();
-       console.log("Dados enviados:", formData);
-    }
-    
-return(
-    <form onSubmit={handleSubmit} style={{ maxWidth: "500px", margin: "auto" }}>
-      <h2>Cadastro</h2>
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Dados enviados:", formData);
+  };
 
-      <label>Nome:</label>
-      <input name="nome" type="text" value={formData.nome} onChange={handleChange} required />
+  const fields = [
+    { label: "Nome completo", name: "nome", type: "text" },
+    { label: "CPF", name: "cpf", type: "text" },
+    { label: "Telefone", name: "telefone", type: "text" },
+    { label: "E-mail", name: "email", type: "email" },
+    { label: "CEP", name: "cep", type: "text" },
+    { label: "Estado", name: "estado", type: "text" },
+    { label: "Cidade", name: "cidade", type: "text" },
+    { label: "Bairro", name: "bairro", type: "text" },
+    { label: "Rua", name: "rua", type: "text" },
+    { label: "Número", name: "numero", type: "text" },
+    { label: "Complemento", name: "complemento", type: "text", placeholder: "Opcional" }
+  ];
 
-      <label>CPF:</label>
-      <input name="cpf" type="text" value={formData.cpf} onChange={handleChange} required />
+  return (
+    <div className={styles.page}>
+      <div className={styles.header}>
+        <img src={logo} alt="Logo" className={styles.logo} />
+        <h2>Teste Calculadora Postaqui</h2>
+      </div>
 
-      <label>Telefone:</label>
-      <input name="telefone" type="text" value={formData.telefone} onChange={handleChange} required />
+      <form onSubmit={handleSubmit} className={styles.container}>
+        <div className={styles.formTitle}>Dados de Origem</div>
 
-      <label>Email:</label>
-      <input name="email" type="email" value={formData.email} onChange={handleChange} required />
+        <div className={styles.formGrid}>
+          {fields.map((field) => (
+            <div className={styles.formGroup} key={field.name}>
+              <label className={styles.label}>{field.label}</label>
+              <input
+                className={styles.input}
+                type={field.type}
+                name={field.name}
+                value={formData[field.name]}
+                onChange={handleChange}
+                required={field.name !== "complemento"}
+                placeholder={field.placeholder || ""}
+              />
+            </div>
+          ))}
+        </div>
 
-      <label>CEP:</label>
-      <input name="cep" type="text" value={formData.cep} onChange={handleChange} required />
-
-      <label>Estado:</label>
-      <input name="estado" type="text" value={formData.estado} onChange={handleChange} required />
-
-      <label>Cidade:</label>
-      <input name="cidade" type="text" value={formData.cidade} onChange={handleChange} required />
-
-      <label>Bairro:</label>
-      <input name="bairro" type="text" value={formData.bairro} onChange={handleChange} required />
-
-      <label>Rua:</label>
-      <input name="rua" type="text" value={formData.rua} onChange={handleChange} required />
-
-      <label>Número:</label>
-      <input name="numero" type="text" value={formData.numero} onChange={handleChange} required />
-
-      <label>Complemento:</label>
-      <input name="complemento" type="text" value={formData.complemento} onChange={handleChange} />
-
-      <button type="submit">Enviar</button>
-    </form>
-)
+        <button type="submit" className={styles.button}>Avançar</button>
+      </form>
+    </div>
+  );
 }
 
-export default Forms
-
+export default Forms;
