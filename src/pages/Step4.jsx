@@ -11,12 +11,22 @@ function Step4() {
   const [opcaoSelecionada, setOpcaoSelecionada] = useState(null);
 
   const frete = location.state?.frete || [];
-  const pedidoId = location.state?.pedido?.id;
+  const pedido = location.state?.pedido;
+  const pedidoId = pedido?.id;
 
   // Proteção contra acesso direto
   useEffect(() => {
-    if (!frete.length || !pedidoId) {
-      alert("Dados do pedido não encontrados. Retornando à etapa inicial.");
+    try {
+      if (!frete.length || !pedidoId) {
+        console.warn("Dados ausentes. Verifique frete ou pedidoId:");
+        console.log("frete:", frete);
+        console.log("pedidoId:", pedidoId);
+        alert("Dados do pedido não encontrados. Retornando à etapa inicial.");
+        navigate("/");
+      }
+    } catch (err) {
+      console.error("Erro ao verificar dados iniciais do pedido:", err);
+      alert("Erro ao carregar a etapa. Redirecionando.");
       navigate("/");
     }
   }, [frete, pedidoId, navigate]);
@@ -25,11 +35,15 @@ function Step4() {
   useEffect(() => {
     const buscarPedido = async () => {
       try {
+        console.log("Buscando pedido com ID:", pedidoId);
         const resposta = await fetch(`http://localhost:3001/api/pedido/${pedidoId}`);
+        if (!resposta.ok) throw new Error("Erro ao buscar o pedido na API");
         const dados = await resposta.json();
+        console.log("Pedido retornado:", dados);
         setPedidoCompleto(dados);
       } catch (err) {
         console.error("Erro ao buscar pedido do banco:", err);
+        alert("Erro ao buscar os dados do pedido.");
       }
     };
 
@@ -40,7 +54,7 @@ function Step4() {
     if (!opcaoSelecionada) return alert("Selecione uma opção de frete.");
 
     try {
-      await fetch(`http://localhost:3001/api/pedido/${pedidoId}/escolher`, {
+      const resposta = await fetch(`http://localhost:3001/api/pedido/${pedidoId}/escolher`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json"
@@ -48,14 +62,17 @@ function Step4() {
         body: JSON.stringify({ escolhido: opcaoSelecionada })
       });
 
+      if (!resposta.ok) throw new Error("Erro ao salvar o frete escolhido");
+
       alert("Frete escolhido salvo com sucesso!");
       navigate("/sucesso");
     } catch (error) {
       console.error("Erro ao salvar frete escolhido:", error);
+      alert("Erro ao salvar sua escolha de frete.");
     }
   };
 
-  if (!pedidoCompleto) return <p>Carregando...</p>;
+  if (!pedidoCompleto) return <p>Carregando dados do pedido...</p>;
 
   // Dados de origem e destino a partir do banco
   const origem = pedidoCompleto.sender;

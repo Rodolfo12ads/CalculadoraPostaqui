@@ -5,6 +5,7 @@ import Frase from "../components/Frase";
 import Forms from "../components/Forms";
 import styles from "./Step2.module.css";
 import Logo from "../components/Logo";
+import ResumoOrigem from "../components/ResumoOrigem";
 
 function Step2() {
   const location = useLocation();
@@ -33,15 +34,7 @@ function Step2() {
       <Logo />
       <h2 className={styles.title}>Origem</h2>
 
-      <div className={styles.dadosConfirmacao}>
-        <Frase texto="Origem" />
-        {Object.entries(origemData).map(([campo, valor]) => (
-          <div key={campo} className={styles.dado}>
-            <strong>{campo.charAt(0).toUpperCase() + campo.slice(1)}:</strong>
-            <span>{valor || "—"}</span>
-          </div>
-        ))}
-      </div>
+      <ResumoOrigem origem={origemData} />
 
       <Frase texto="Destino" />
       <Forms formData={formData} setFormData={setFormData} onNext={handleNext} prefix="Destino" />

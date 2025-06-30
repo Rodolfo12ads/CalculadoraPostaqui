@@ -12,6 +12,8 @@ function Step3() {
   const [formData, setFormData] = useState(location.state || {});
 
   const handleSubmitPacote = async (pacoteData) => {
+    const dadosCompletos = { ...formData, ...pacoteData };
+
     const payload = {
       sender: {
         fullname: formData.nome,
@@ -50,11 +52,11 @@ function Step3() {
         height: pacoteData.altura,
         width: pacoteData.largura,
         length: pacoteData.comprimento,
-        reverse: pacoteData.entregaReversa || false,
+        reverse: pacoteData.logisticaReversa || false,
         ar: pacoteData.avisoRecebimento || false,
         own_hands: pacoteData.maosProprias || false,
         information: {
-          amount: pacoteData.valorDeclarado,
+          amount: pacoteData.valor,
           quantity: pacoteData.quantidade,
           description: pacoteData.descricao
         }
@@ -64,25 +66,28 @@ function Step3() {
     try {
       const response = await fetch("http://localhost:3001/api/pedido", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
       });
 
       const resultado = await response.json();
-      console.log("Resultado da simulação:", resultado);
 
-      // Avança para o Step4 com os dados retornados
+      console.log("Resultado da API:", resultado);
+
+      if (!resultado?.frete || !resultado?.pedido) {
+        alert("Erro: A resposta da API está incompleta.");
+        return;
+      }
+
       navigate("/step4", {
         state: {
           frete: resultado.frete,
           pedido: resultado.pedido
         }
       });
-
     } catch (error) {
       console.error("Erro ao enviar os dados:", error);
+      alert("Erro ao processar o pedido.");
     }
   };
 
@@ -95,7 +100,7 @@ function Step3() {
     bairro: formData.bairro,
     rua: formData.rua,
     numero: formData.numero,
-    complemento: formData.complemento,
+    complemento: formData.complemento
   };
 
   const destinoData = {
@@ -107,16 +112,14 @@ function Step3() {
     bairro: formData.bairroDestino,
     rua: formData.ruaDestino,
     numero: formData.numeroDestino,
-    complemento: formData.complementoDestino,
+    complemento: formData.complementoDestino
   };
 
   return (
     <div className={styles.page}>
       <Logo />
       <Frase texto="Teste Calculadora Postaqui" />
-
       <ResumoOrigemDestino origem={origemData} destino={destinoData} />
-
       <FormPacoteEnvio onSubmit={handleSubmitPacote} />
     </div>
   );
